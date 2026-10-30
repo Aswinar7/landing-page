@@ -1,0 +1,59 @@
+/* ---------- Section 2, "Formulas": the six rules rewritten by scroll, an AgentDNA scan line sweeping the list (formulas.js). Uses the .s2 tokens and .eq / .slot rewrite from shapes.css ---------- */
+.fx[hidden], .s2[hidden] { display: none; }
+
+/* the tall track gives the scroll its length; the frame pins under the 80px nav, one viewport high */
+.fx__track { position: relative; height: calc(100svh - 80px + 240svh); }
+.fx__pin { position: sticky; top: 80px; max-width: var(--max); height: calc(100vh - 80px); height: calc(100svh - 80px); margin: 0 auto; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: clamp(16px, 3.4vh, 40px); padding: clamp(24px, 4.4vh, 56px) var(--pad) clamp(16px, 3.4vh, 40px); }
+.fx .frame__head { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 8px; } /* headline over the subheadline */
+.fx .frame__head h2 { font-size: 48px; font-weight: 500; line-height: 56px; letter-spacing: -0.02em; }
+.fx .frame__head p { max-width: 56ch; font-size: 16px; line-height: 24px; }
+.fx__stage { position: relative; min-height: 0; }
+
+/* the Before / After pill that crossfades with a tick */
+.fsc__state { display: inline-grid; justify-items: end; font-size: 13px; font-weight: 500; line-height: 16px; white-space: nowrap; }
+.fsc__state > span { grid-area: 1 / 1; display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; transition: opacity 0.4s, translate 0.5s var(--ease); }
+.fsc__state-b { background: var(--tone); color: var(--muted); }
+.fsc__state-a { background: var(--blue-tint); color: var(--blue); opacity: 0; translate: 0 6px; }
+.fx svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.is-done .fsc__state-b { opacity: 0; translate: 0 -6px; }
+.is-done .fsc__state-a { opacity: 1; translate: 0 0; transition-delay: 0.3s; }
+.fx .tk--op { color: var(--blue); }
+
+/* ========== Scan ========== */
+.fsc { position: absolute; inset: 0; }
+.fsc__panel { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: 24px clamp(16px, 3vw, 48px); border-radius: 28px; overflow: hidden;
+  background: radial-gradient(circle at 1px 1px, rgba(20, 36, 107, 0.09) 1px, transparent 0) 0 0 / 24px 24px, linear-gradient(180deg, #f7f9fc, #f1f4f9); box-shadow: inset 0 0 0 1px rgba(6, 33, 80, 0.06); }
+.fsc__rows { display: flex; flex-direction: column; }
+.fsc__row { display: grid; grid-template-columns: 40px 200px minmax(0, 1fr) 150px; align-items: center; gap: 16px; padding: clamp(10px, 2vh, 20px) 0; border-top: 1px solid rgba(6, 33, 80, 0.07); }
+.fsc__row:first-child { border-top: 0; }
+.fsc__no { font: 500 13px/1 var(--code); color: var(--muted); transition: color 0.3s; }
+.fsc__row.is-done .fsc__no { color: var(--blue); }
+.fsc__title { font-size: 15px; font-weight: 500; color: var(--ink-2); }
+.fsc__cell { display: grid; }
+.fsc__cell > * { grid-area: 1 / 1; }
+.fsc__eq { font-size: clamp(18px, 2vw, 32px); }
+.fsc__eq--b { color: var(--ink-2); }
+.fsc__eq--a .tk--n { color: var(--blue); }
+.fsc__state { justify-self: end; }
+.fsc__beam { position: absolute; left: 0; right: 0; top: 0; height: 0; pointer-events: none; will-change: transform; }
+.fsc__beam::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background: linear-gradient(180deg, rgba(47, 107, 240, 0), rgba(47, 107, 240, 0.1)); transition: opacity 0.4s; }
+.fsc__beam::after { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: linear-gradient(90deg, transparent, var(--blue) 10%, var(--blue) 90%, transparent); box-shadow: 0 0 12px rgba(47, 107, 240, 0.6); }
+.fsc__beam.is-done::before { opacity: 0; }
+.fsc__chip { position: absolute; z-index: 1; right: clamp(16px, 3vw, 48px); top: 0; translate: 0 -50%; display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: var(--navy); color: #fff; font-size: 12px; font-weight: 500; line-height: 16px; white-space: nowrap; }
+.fsc__chip i { width: 6px; height: 6px; border-radius: 50%; background: #9db8ff; box-shadow: 0 0 0 3px rgba(157, 184, 255, 0.25); }
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 1100px) {
+  .fsc__row { grid-template-columns: 32px 140px minmax(0, 1fr) auto; }
+}
+@media (max-width: 720px) {
+  .fx .frame__head h2 { font-size: 32px; line-height: 40px; }
+  .fx__pin .frame__head p { display: none; }
+  .fsc__panel { padding: 12px 16px; border-radius: 20px; }
+  .fsc__row { grid-template-columns: 24px minmax(0, 1fr); gap: 4px 8px; padding: 10px 0; }
+  .fsc__title { font-size: 12px; }
+  .fsc__cell { grid-column: 2; }
+  .fsc__no { grid-row: 1 / span 2; }
+  .fsc__state { display: none; }
+  .fsc__eq { font-size: 16px; }
+}

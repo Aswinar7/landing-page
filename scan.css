@@ -1,0 +1,568 @@
+/* Hero scan animation: copied from animation/animation_scan_1 2/styles.css, scoped under .scan-stage */
+.scan-stage {
+  --bg: #ffffff;
+  --grid: #eceef2;
+  --ink: #0f172a;
+  --ink-2: #334155;
+  --muted: #64748b;
+  --muted-2: #94a3b8;
+  --line: #e2e8f0;
+  --line-2: #cbd5e1;
+  --navy: #0f172a;
+  --navy-2: #1e293b;
+  --blue: #2563eb;
+  --blue-glow: rgba(37, 99, 235, .55);
+  --green: #16a34a;
+  --green-2: #22c55e;
+  --green-bg: #dcfce7;
+  --green-ink: #166534;
+  --red: #ef4444;
+  --red-bg: #fef2f2;
+  --red-ink: #b91c1c;
+  --sans: "Google Sans", "DM Sans", system-ui, sans-serif; /* was Inter: mapped to the Figma fonts */
+  --mono: "Space Grotesk", ui-monospace, monospace; /* was JetBrains Mono */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --spring: cubic-bezier(.3, 1.5, .5, 1);
+  --card-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 12px 32px -12px rgba(15, 23, 42, .12);
+}
+
+
+
+
+.scan-stage {
+  position: relative;
+  width: 1203px; height: 504px;
+  flex: none;
+  transform-origin: top left; /* scaled by .fit in script.js */
+  text-align: left;
+  background: none; /* dot grid lives in ::before so its edge fade never fades the content */
+  transition: opacity .45s ease;
+}
+.scan-stage.fade { opacity: 0; }
+
+/* ---------------- Provenance ---------------- */
+.scan-stage .prov {
+  position: absolute;
+  left: 835px; top: 76px; /* Provenance on the right */
+  width: 340px; height: 392px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  z-index: 5;
+  cursor: default;
+}
+.scan-stage .prov-head {
+  position: absolute;
+  left: 20px; right: 16px; top: 0;
+  height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+.scan-stage .prov-head h2 { font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+.scan-stage .live {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 22px; padding: 0 9px 0 7px;
+  border-radius: 999px;
+  background: var(--red-bg);
+  color: var(--red-ink);
+  font-size: 11px; font-weight: 600; letter-spacing: .02em;
+}
+.scan-stage .live i { position: relative; width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+.scan-stage .live i::after {
+  content: ""; position: absolute; inset: -3px;
+  border-radius: 50%; border: 1.5px solid var(--red);
+  animation: ping 1.6s cubic-bezier(0, 0, .2, 1) infinite;
+}
+@keyframes ping { 0% { transform: scale(.5); opacity: .9; } 100% { transform: scale(1.6); opacity: 0; } }
+
+/* scrollable log */
+.scan-stage .prov-scroll {
+  position: absolute;
+  left: 0; right: 0; top: 55px; bottom: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(transparent, #000 14px, #000 calc(100% - 30px), transparent);
+          mask-image: linear-gradient(transparent, #000 14px, #000 calc(100% - 30px), transparent);
+}
+.scan-stage .prov-scroll::-webkit-scrollbar { display: none; }
+.scan-stage .prov-list { list-style: none; padding: 18px 0 40px; }
+
+.scan-stage .log {
+  position: relative;
+  margin: 0 10px;
+  padding: 6px 10px 12px 34px;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .5s var(--ease), transform .5s var(--ease), background .25s ease;
+}
+/* timeline spine down to the next dot */
+.scan-stage .log::before {
+  content: "";
+  position: absolute;
+  left: 19.5px; top: 18px;
+  width: 1.5px; height: 0;
+  background: var(--line-2);
+  transition: height .45s var(--ease) .1s;
+}
+.scan-stage .log.show:not(:last-child)::before { height: calc(100% - 6px); }
+.scan-stage .log .dot {
+  position: absolute;
+  left: 15px; top: 11px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 0 2px #fff;
+  transform: scale(0);
+  transition: transform .4s var(--spring) .08s;
+}
+.scan-stage .log.ok .dot { background: var(--green-2); }
+.scan-stage .log.denied .dot { background: var(--red); }
+.scan-stage .log .t {
+  display: flex; align-items: baseline; gap: 10px;
+  font-size: 13px; font-weight: 500; color: var(--ink); line-height: 20px;
+  text-wrap: pretty;
+}
+.scan-stage .log .t .title { flex: 1 1 auto; }
+.scan-stage .log .ts {
+  flex: none; margin-left: auto;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 500;
+  color: var(--muted-2); font-variant-numeric: tabular-nums;
+}
+.scan-stage .log .s {
+  margin-top: 2px;
+  font-size: 12.5px; color: var(--muted); line-height: 18px;
+  text-wrap: pretty;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity .4s ease .2s, transform .4s var(--ease) .2s;
+}
+.scan-stage .log.show .s { opacity: 1; transform: none; }
+.scan-stage .log .s.red { color: var(--red-ink); font-weight: 500; transition-delay: .55s; }
+.scan-stage .log.denied .t { color: var(--red-ink); }
+.scan-stage .log.show { opacity: 1; transform: none; cursor: pointer; }
+.scan-stage .log.show .dot { transform: scale(1); }
+
+/* the denial row: tinted card with a red edge */
+.scan-stage .log.denied { background: var(--red-bg); margin-top: 4px; padding-top: 10px; padding-bottom: 12px; }
+.scan-stage .log.denied::after {
+  content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+  width: 3px; border-radius: 3px; background: var(--red);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform .4s var(--ease) .15s;
+}
+.scan-stage .log.denied.show::after { transform: scaleY(1); }
+.scan-stage .log.denied .dot { top: 15px; }
+.scan-stage .log.denied::before { top: 22px; }
+.scan-stage .log.denied.show { animation: deniedFlash 1s ease-out .1s; }
+@keyframes deniedFlash { 0% { background: var(--red-bg); } 30% { background: #fecaca; } 100% { background: var(--red-bg); } }
+
+/* hover a log → point at its element in the flow */
+.scan-stage .log.show:hover { background: #f8fafc; }
+.scan-stage .log.denied.show:hover { background: #fee2e2; }
+.scan-stage .log.show:hover .dot { transform: scale(1.25); }
+.scan-stage .focus { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--blue) !important; transition-delay: 0s !important; }
+.scan-stage .badge.focus { transform: scale(1.25) !important; }
+.scan-stage .wire.focus { stroke: var(--blue) !important; stroke-width: 2.4 !important; }
+
+/* ---------------- Flow ---------------- */
+.scan-stage .wires {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity .4s ease;
+}
+.scan-stage .wire {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset .7s var(--ease), stroke .4s ease;
+  transition-delay: var(--d), 0s;
+}
+.scan-stage.flow-on .wire { stroke-dashoffset: 0; }
+.scan-stage .wire.ok { stroke: #86efac; }
+.scan-stage .wire.red { stroke: #fca5a5; }
+
+/* traveling pulses: JS clones each wire into .pulses with class .pulse */
+.scan-stage .pulse {
+  fill: none;
+  stroke: var(--green-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 7 16;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.scan-stage .pulse.on { opacity: 1; animation: march 1s linear infinite; }
+.scan-stage .pulse.red { stroke: var(--red); stroke-dasharray: 5 11; }
+.scan-stage .pulse.red.on { animation: marchRed .7s linear infinite; }
+@keyframes march { to { stroke-dashoffset: -23; } }
+@keyframes marchRed { to { stroke-dashoffset: -16; } }
+
+.scan-stage .node {
+  position: absolute;
+  width: 163px; height: 40px;
+  display: flex; align-items: center; gap: 10px;
+  padding-left: 10px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--navy-2), var(--navy));
+  color: #fff;
+  font-size: 14px; font-weight: 500; letter-spacing: -.005em;
+  white-space: nowrap;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .08) inset, 0 6px 16px -6px rgba(15, 23, 42, .45);
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(8px) scale(.96);
+  transition: opacity .5s var(--ease), transform .5s var(--ease), box-shadow .35s ease, filter .35s ease, background .35s ease;
+  transition-delay: var(--d);
+}
+.scan-stage .node.user { width: 151px; }
+.scan-stage .node .ic {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(255, 255, 255, .12);
+  flex: none;
+}
+.scan-stage .node .ic img { width: 15px; height: 15px; display: block; }
+.scan-stage.flow-on .node { opacity: 1; transform: none; }
+.scan-stage .node.hit {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .08) inset, 0 0 0 2px #fff, 0 0 0 4px var(--green-2), 0 8px 24px -6px rgba(34, 197, 94, .5);
+  transition-delay: 0s;
+}
+.scan-stage .node.hit-red {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .08) inset, 0 0 0 2px #fff, 0 0 0 4px var(--red), 0 8px 24px -6px rgba(239, 68, 68, .55);
+  transition-delay: 0s;
+}
+
+.scan-stage .tile {
+  position: absolute;
+  left: 703px;
+  width: 53px; height: 53px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fff;
+  box-shadow: var(--card-shadow);
+  display: grid; place-items: center;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(.85);
+  transition: opacity .45s var(--ease), transform .45s var(--ease), box-shadow .35s ease, border-color .35s ease, filter .35s ease;
+  transition-delay: var(--d);
+}
+.scan-stage .tile > img { width: 30px; height: 30px; display: block; }
+.scan-stage.flow-on .tile { opacity: 1; transform: none; }
+.scan-stage .tile.blocked {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, .22), 0 10px 24px -8px rgba(239, 68, 68, .55);
+  transition-delay: 0s;
+  animation: tileFlash .9s ease-out;
+}
+@keyframes tileFlash {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, .6), 0 0 0 0 rgba(239, 68, 68, .35); }
+  100% { box-shadow: 0 0 0 3px rgba(239, 68, 68, .22), 0 0 0 26px rgba(239, 68, 68, 0); }
+}
+.scan-stage .tile.hit { border-color: #bbf7d0; box-shadow: 0 0 0 3px rgba(34, 197, 94, .22), var(--card-shadow); transition-delay: 0s; }
+.scan-stage .tile.hit-red { border-color: var(--red); box-shadow: 0 0 0 3px rgba(239, 68, 68, .22); transition-delay: 0s; }
+.scan-stage.settled .node, .scan-stage.settled .tile, .scan-stage.settled .wire { transition-delay: 0s; }
+
+/* check badges */
+.scan-stage .badge {
+  position: absolute;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--green-2);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(34, 197, 94, .18);
+  display: grid; place-items: center;
+  z-index: 3;
+  opacity: 0;
+  transform: scale(.3);
+  transition: opacity .2s ease, transform .45s var(--spring), filter .35s ease;
+}
+.scan-stage .badge svg { width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.scan-stage .badge.on { opacity: 1; transform: scale(1); }
+
+/* badge appearing out of an envelope */
+.scan-stage .badge.from-env { transition: filter .35s ease; }
+.scan-stage .badge.from-env.on { animation: badgeIn .5s var(--spring) both; }
+@keyframes badgeIn {
+  0% { transform: rotateY(90deg) scale(.8); box-shadow: 0 0 0 2px #fff, 0 0 0 0 rgba(34, 197, 94, .7); }
+  60% { transform: rotateY(0) scale(1.15); box-shadow: 0 0 0 2px #fff, 0 0 0 10px rgba(34, 197, 94, 0); }
+  100% { transform: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(34, 197, 94, .18); }
+}
+
+.scan-stage .verified {
+  position: absolute;
+  left: 106px; top: 197px;
+  height: 22px; padding: 0 9px 0 6px;
+  display: inline-flex; align-items: center; gap: 4px;
+  border-radius: 999px;
+  background: var(--green-bg);
+  border: 1px solid #bbf7d0;
+  font-size: 11.5px; font-weight: 600; color: var(--green-ink);
+  z-index: 6;
+  opacity: 0;
+  transform: translateY(4px) scale(.7);
+  transform-origin: left center;
+  transition: opacity .25s ease, transform .45s var(--spring), filter .35s ease;
+}
+.scan-stage .verified svg { width: 12px; height: 12px; fill: none; stroke: var(--green); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.scan-stage .verified.on { opacity: 1; transform: none; }
+
+.scan-stage .denied-tag {
+  position: absolute;
+  left: 576px; top: 118px;
+  height: 24px; padding: 0 10px 0 7px;
+  display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 999px;
+  background: var(--red);
+  box-shadow: 0 6px 16px -4px rgba(239, 68, 68, .6);
+  color: #fff;
+  font-size: 11.5px; font-weight: 600;
+  white-space: nowrap;
+  z-index: 7; /* above the scanner (6) */
+  opacity: 0;
+  transform: scale(.6);
+  transition: opacity .2s ease, transform .45s var(--spring), filter .35s ease;
+}
+.scan-stage .denied-tag svg { width: 11px; height: 11px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+.scan-stage .denied-tag.on { opacity: 1; transform: none; animation: shake .35s ease .12s; }
+@keyframes shake {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -3px 0; }
+  50% { translate: 3px 0; }
+  75% { translate: -2px 0; }
+}
+
+/* ---------------- Summary ---------------- */
+.scan-stage .summary {
+  position: absolute;
+  left: 28px; top: 470px;
+  height: 28px; padding: 0 12px;
+  display: inline-flex; align-items: center; gap: 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: var(--card-shadow);
+  font-size: 12px; font-weight: 500; color: var(--ink-2);
+  white-space: nowrap;
+  z-index: 4;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .4s ease, transform .5s var(--ease);
+}
+.scan-stage .summary.on { opacity: 1; transform: none; }
+/* shown inside the Provenance log (the canvas copy is only a template) */
+.scan-stage > .summary { display: none; }
+.scan-stage .log-summary { list-style: none; padding: 2px 20px 8px 44px; } /* lines up with the log text */
+.scan-stage .log-summary .summary { position: static; display: inline-flex; box-shadow: none; background: #f8fafc; }
+.scan-stage .summary span { display: inline-flex; align-items: center; gap: 6px; }
+.scan-stage .summary i { width: 7px; height: 7px; border-radius: 50%; }
+.scan-stage .summary .s-ok i { background: var(--green-2); }
+.scan-stage .summary .s-no i { background: var(--red); }
+.scan-stage .summary .s-no { color: var(--red-ink); }
+.scan-stage .summary .s-sep { width: 1px; height: 14px; background: var(--line); }
+
+/* ---------------- Focus on the item being scanned ---------------- */
+/* everything else steps back… */
+.scan-stage.focusing .wires { opacity: .45; }
+/* Out-of-focus items stay fully opaque (fading them let the wires show through); they are dimmed with colour instead. */
+.scan-stage.focusing .node:not(.scan-target) { background: #a7b0bf; box-shadow: 0 4px 12px -6px rgba(15, 23, 42, .25); transition-delay: 0s; }
+.scan-stage.focusing .node:not(.scan-target) .ic,
+.scan-stage.focusing .node:not(.scan-target) span { opacity: .8; }
+.scan-stage.focusing .tile:not(.scan-target) { filter: saturate(.25); transition-delay: 0s; }
+.scan-stage.focusing .tile:not(.scan-target) > img { opacity: .5; }
+.scan-stage.focusing .badge.on:not(.lit),
+.scan-stage.focusing .verified.on:not(.lit),
+.scan-stage.focusing .denied-tag.on:not(.lit) { filter: saturate(.35) brightness(1.12); }
+.scan-stage .node .ic, .scan-stage .node span, .scan-stage .tile > img { transition: opacity .35s ease; }
+
+/* …while the scanned item lifts and glows: blue while checking, then green / red */
+.scan-stage .node.scan-target, .scan-stage .tile.scan-target {
+  z-index: 5;
+  transform: scale(1.04);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--blue), 0 10px 28px -6px var(--blue-glow);
+  transition-delay: 0s;
+}
+.scan-stage .node.scan-target.hit, .scan-stage .tile.scan-target.hit {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--green-2), 0 10px 28px -6px rgba(34, 197, 94, .55);
+}
+.scan-stage .node.scan-target.hit-red, .scan-stage .tile.scan-target.hit-red {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--red), 0 10px 28px -6px rgba(239, 68, 68, .6);
+}
+
+/* ---------------- Border scanner ---------------- */
+.scan-stage .scanner {
+  --sc: var(--blue);
+  --sc-glow: var(--blue-glow);
+  --sc-head: #bfdbfe;
+  --sc-fill: rgba(37, 99, 235, .06);
+  position: absolute; inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(.96);
+  transition: opacity .4s var(--ease), transform .4s var(--ease);
+}
+.scan-stage .scanner.on { opacity: 1; transform: none; }
+.scan-stage .scanner.fail {
+  --sc: var(--red);
+  --sc-glow: rgba(239, 68, 68, .6);
+  --sc-head: #fecaca;
+  --sc-fill: rgba(239, 68, 68, .07);
+}
+
+/* corner brackets */
+.scan-stage .box {
+  position: absolute;
+  border-radius: 10px;
+  background: var(--sc-fill);
+  transition: background .3s ease;
+}
+.scan-stage .corner {
+  position: absolute;
+  width: var(--arm, 14px); height: var(--arm, 14px);
+  border: 0 solid var(--sc);
+  filter: drop-shadow(0 0 4px var(--sc-glow));
+  transition: border-color .3s ease;
+}
+.scan-stage .corner.tl { left: 0; top: 0; border-width: 2px 0 0 2px; border-top-left-radius: 9px; }
+.scan-stage .corner.tr { right: 0; top: 0; border-width: 2px 2px 0 0; border-top-right-radius: 9px; }
+.scan-stage .corner.bl { left: 0; bottom: 0; border-width: 0 0 2px 2px; border-bottom-left-radius: 9px; }
+.scan-stage .corner.br { right: 0; bottom: 0; border-width: 0 2px 2px 0; border-bottom-right-radius: 9px; }
+
+/* light sweeping across the item while checks run */
+.scan-stage .sweep {
+  position: absolute;
+  left: 4px; right: 4px; top: 2px;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, var(--sc) 50%, transparent);
+  box-shadow: 0 0 10px var(--sc-glow);
+  opacity: 0;
+}
+.scan-stage.scanning .sweep { opacity: 1; animation: sweep .7s ease-in-out 2 alternate; } /* one pass down and back = SCAN_SEC */
+@keyframes sweep {
+  from { top: 2px; }
+  to   { top: calc(100% - 4px); }
+}
+
+/* ---------------- Checks HUD (rides with the scanner) ---------------- */
+.scan-stage::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(circle at 1px 1px, var(--grid) 1.2px, transparent 1.4px) 0 0 / 22px 22px;
+  -webkit-mask: radial-gradient(75% 85% at 50% 50%, #000 60%, transparent 100%); mask: radial-gradient(75% 85% at 50% 50%, #000 60%, transparent 100%); }
+.scan-stage .checkrig {
+  position: absolute;
+  left: 0; top: 0;
+  width: max-content; height: 44px;
+  z-index: 7;
+  will-change: transform;
+  transform: translate(61px, 10px);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.scan-stage .checkrig.on { opacity: 1; }
+.scan-stage .checks {
+  position: relative; width: max-content; height: 44px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .05), 0 14px 32px -10px rgba(15, 23, 42, .22);
+  display: flex; align-items: center; gap: 8px; /* 8pt spacing */
+  padding: 0 12px; /* 12pt padding */
+  font-size: 12.5px; color: var(--ink-2);
+}
+/* line from the HUD down to the item being scanned */
+.scan-stage .tether {
+  position: absolute;
+  left: 0; top: 0;
+  width: 2px; height: 0;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(37, 99, 235, .15), var(--blue));
+  z-index: 1; /* behind nodes and tiles, like a wire */
+  will-change: transform, height;
+  opacity: 0;
+  transition: opacity .4s ease, box-shadow .3s ease;
+}
+.scan-stage .tether.on { opacity: 1; }
+.scan-stage.scanning .tether { box-shadow: 0 0 10px var(--blue-glow); }
+.scan-stage .dna {
+  position: relative;
+  width: 32px; height: 32px;
+  flex: none;
+}
+.scan-stage .dna img {
+  position: absolute; left: 0; top: 0;
+  width: 46px; height: 41.112px; object-fit: cover;
+  transform: scale(.68); transform-origin: 0 0;
+  translate: 0.5px 2px;
+}
+.scan-stage .dna .dna-mark {
+  left: 18.18px; top: 15.61px; width: 7px; height: 8.14px;
+  transform: none;
+}
+.scan-stage .dna .ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1.5px solid var(--blue);
+  opacity: 0;
+}
+.scan-stage.scanning .dna .ring { animation: ping 1.2s cubic-bezier(0, 0, .2, 1) infinite; }
+.scan-stage .hud-title { font-weight: 600; color: var(--ink); }
+.scan-stage .step { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.scan-stage .ind {
+  position: relative;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--line-2);
+  background: #fff;
+  flex: none;
+  transition: background .3s ease, border-color .3s ease;
+}
+.scan-stage .ind.busy { border-color: #dbeafe; border-top-color: var(--blue); animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.scan-stage .ind svg {
+  position: absolute; left: 50%; top: 50%;
+  width: 11px; height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  opacity: 0;
+}
+.scan-stage .ind svg.ok path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset .3s ease .05s; }
+.scan-stage .ind.on { background: var(--green-2); border-color: var(--green-2); }
+.scan-stage .ind.on svg.ok { opacity: 1; }
+.scan-stage .ind.on svg.ok path { stroke-dashoffset: 0; }
+.scan-stage .ind.fail { background: var(--red); border-color: var(--red); animation: failPop .4s var(--spring); }
+.scan-stage .ind.fail svg.no { opacity: 1; }
+@keyframes failPop { 0% { transform: scale(.6); } 100% { transform: scale(1); } }
+
+/* ---------------- Envelopes (request travelling along wires) ---------------- */
+.scan-stage .envelope {
+  position: absolute;
+  width: 20px; height: 14px;
+  margin: -7px 0 0 -10px;
+  z-index: 6;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, .25));
+}
+.scan-stage .envelope svg { display: block; width: 100%; height: 100%; }
+.scan-stage .envelope .body { fill: #fff; stroke: var(--navy); stroke-width: 1.2; transition: fill .2s ease, stroke .2s ease; }
+.scan-stage .envelope .flap { fill: none; stroke: var(--navy); stroke-width: 1.2; stroke-linejoin: round; transition: stroke .2s ease; }
+.scan-stage .envelope.bad .body { fill: var(--red); stroke: #991b1b; }
+.scan-stage .envelope.bad .flap { stroke: #fff; }
+/* envelope waiting at its badge spot while the item is scanned */
+.scan-stage .envelope.holding { animation: holding .7s ease-in-out infinite alternate; }
+@keyframes holding { to { filter: drop-shadow(0 0 6px var(--blue-glow)); } }
+
+/* used while resetting for replay so nothing animates backwards */
+.scan-stage.no-anim, .scan-stage.no-anim * { transition: none !important; animation: none !important; }
+
+/* ---------------- Node theme: white (chosen in Page options) ---------------- */
+.scan-stage[data-nodes="white"] .node { background: #fff; color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 6px 16px -8px rgba(15, 23, 42, .18); }
+.scan-stage[data-nodes="white"] .node span { color: var(--ink); }
+.scan-stage[data-nodes="white"] .node .ic { background: #eef2ff; }
+.scan-stage[data-nodes="white"] .node .ic img { filter: brightness(0) saturate(100%) invert(14%) sepia(30%) saturate(2500%) hue-rotate(205deg); } /* white icons → navy */
+.scan-stage[data-nodes="white"].focusing .node:not(.scan-target) { background: #f6f7f9; box-shadow: 0 0 0 1px var(--line); }
+.scan-stage[data-nodes="white"].focusing .node:not(.scan-target) .ic,
+.scan-stage[data-nodes="white"].focusing .node:not(.scan-target) span { opacity: .45; }

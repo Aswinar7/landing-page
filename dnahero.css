@@ -1,0 +1,119 @@
+/* ---------- Hero: DNA strand (from dna_strand_hero/, layout L3 · showcase) ----------
+ * The animation comes from that folder: the helix held as one ∞ turn with its three names in gradient
+ * type. The copy (pill, headline, offer and buttons) and the helix's slot sit in the card's grid in one
+ * of six layouts (Page options → Hero layout, data-hlayout on .dh). Sizing, padding, type and buttons
+ * follow this site: the hero card, 8pt spacing, .eyebrow, .hero__sub and .btn. */
+.hero--dna[hidden], .hero--classic[hidden] { display: none; }
+
+.dh { position: relative; isolation: isolate; display: grid; min-height: calc(100svh - 112px); padding: 40px 56px; border-radius: 24px; overflow: hidden;
+  background: radial-gradient(60% 50% at 85% 0%, rgba(201,213,255,.45), transparent 70%), radial-gradient(50% 40% at 0% 100%, rgba(230,235,254,.7), transparent 70%), linear-gradient(180deg, #f3f5fa, #fbfcfe 60%, #f5f7fb);
+  box-shadow: inset 0 0 0 1px rgba(6,33,80,.06);
+  --grad-a: #3b6cf0; --brand: #14246b; }
+
+/* the stage fills the card behind the copy; dna.js fits the loop into .dh__band */
+.dh .dna-hero { position: absolute; inset: 0; z-index: 0; }
+.dh .dna-stage { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.dh .pillar { position: absolute; left: 0; top: 0; visibility: hidden; display: flex; flex-direction: column; align-items: center; white-space: nowrap; pointer-events: none; will-change: transform; }
+.dh .dna-hero.is-placed .pillar { visibility: visible; }
+.dh .pillar__sub { display: none; }
+.dh .pillar__title { font-size: 32px; font-weight: 400; line-height: 40px; letter-spacing: -.02em; }
+.dh .pillar__title, .dh__accent { background: linear-gradient(90deg, var(--grad-a) 0%, var(--brand) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* the apps scanned one by one over the Control box while the helix holds (placed by dnahero.js) */
+.dh .dh-apps { position: absolute; inset: 0; pointer-events: none; }
+.dh .dh-app { position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: #fff; opacity: 0; transform-origin: 50% 50%; will-change: transform, opacity;
+  box-shadow: 0 0 0 1px rgba(6,33,80,.06), 0 8px 24px rgba(20,36,107,.12); }
+.dh .dh-app img { width: 28px; height: 28px; object-fit: contain; }
+/* the tick once an app has been scanned */
+.dh .dh-app::after { content: ""; position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; border-radius: 50%; transform: scale(0); transition: transform .3s cubic-bezier(.3, 1.6, .5, 1);
+  background: #3b6cf0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M2.4 5.2l1.7 1.7 3.5-3.7' fill='none' stroke='%23fff' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 10px no-repeat;
+  box-shadow: 0 0 0 2px #fff; }
+.dh .dh-app.is-done::after { transform: scale(1); }
+
+/* ---------- the copy and the helix's slot (the copy's wrapper steps aside so its parts join the grid) ---------- */
+.dh__top { display: contents; }
+.dh .eyebrow, .dh__title, .dh__aside { position: relative; z-index: 2; }
+.dh .eyebrow { grid-area: eyebrow; justify-self: start; align-self: start; }
+.dh__title { grid-area: title; font-size: calc(var(--h1, 48px) * var(--fit, 1)); font-weight: 400; line-height: 1.167; /* 48 / 56 */ letter-spacing: -.02em; color: var(--ink); }
+.dh__headline { display: flex; flex-direction: column; }
+/* each line stays on one line once dnahero.js can fit it; without JS the lines simply wrap */
+.dh.js .dh__headline > span { white-space: nowrap; }
+.dh__aside { grid-area: aside; }
+/* the offer: 16 / 24; the buttons 48 high (the outline drawn inside, so both match) at their usual widths */
+.dh .hero__sub { font-size: 16px; line-height: 24px; }
+.dh .hero__ctas { margin-top: 24px; }
+.dh .hero__ctas .btn { height: 48px; padding-top: 0; padding-bottom: 0; }
+/* no drop shadow under the primary, so both buttons show the same 48px edge */
+.dh .hero__ctas .btn--primary { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12); }
+.dh .hero__ctas .btn--outline { border: 0; padding-left: 17px; padding-right: 17px; box-shadow: inset 0 0 0 1px rgba(6, 33, 80, .18); }
+.dh .hero__ctas .btn--outline:hover { box-shadow: inset 0 0 0 1px var(--navy); }
+/* the helix's slot: dnahero.js centres and sizes the ∞ on it */
+.dh__band { grid-area: band; position: relative; z-index: 1; min-height: clamp(200px, 28vh, 360px); }
+
+/* 1 · Showcase: headline left over two rows, pill and offer right, the helix across the bottom */
+.dh[data-hlayout="showcase"] { grid-template-columns: minmax(0, 1fr) minmax(320px, 440px); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "title eyebrow" "title aside" "band band"; column-gap: 96px; }
+.dh[data-hlayout="showcase"] .dh__aside { margin-top: 16px; }
+
+/* 2 · Centered: one column down the middle (headline, offer, buttons; no pill), the helix below */
+.dh[data-hlayout="centered"] { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "title" "aside" "band"; justify-items: center; text-align: center; }
+.dh[data-hlayout="centered"] .eyebrow { display: none; }
+/* the helix sits lower, clear of the buttons (dnahero.js centres it on the slot, so this moves it down) */
+/* the copy sits a little lower than the card's top padding, and the helix keeps a clear gap below the button */
+.dh[data-hlayout="centered"] .dh__title { margin-top: clamp(8px, 2.2vh, 24px); }
+/* the headline in two lines: "Know Every Agent. Govern Every Interaction." over "Prove Every Decision." */
+.dh[data-hlayout="centered"] .dh__headline { flex-direction: row; flex-wrap: wrap; justify-content: center; column-gap: .25em; }
+.dh[data-hlayout="centered"] .dh__headline > span:nth-child(3) { flex-basis: 100%; }
+.dh[data-hlayout="centered"] .dh__band { margin-top: clamp(32px, 6vh, 72px); min-height: clamp(180px, 24vh, 340px); }
+
+/* shared by the centred layouts: the headline's lines, the offer and the buttons all centre */
+.dh[data-hlayout="centered"] .dh__headline, .dh[data-hlayout="core"] .dh__headline { align-items: center; }
+.dh[data-hlayout="centered"] .dh__aside, .dh[data-hlayout="core"] .dh__aside { max-width: 560px; margin-top: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.dh[data-hlayout="centered"] .hero__ctas, .dh[data-hlayout="core"] .hero__ctas { justify-content: center; }
+.dh[data-hlayout="centered"] .dh__band, .dh[data-hlayout="core"] .dh__band { justify-self: stretch; }
+
+/* 3 · Core: centred copy over a soft blue band; the strands run in from both edges and meet at a
+   glossy AgentDNA tile in the middle (dnahero.js keeps the tile on the crossing) */
+.dh[data-hlayout="core"] { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "title" "aside" "band"; justify-items: center; text-align: center; padding-left: 0; padding-right: 0; }
+.dh[data-hlayout="core"] .eyebrow, .dh[data-hlayout="core"] .pillar { display: none; }
+.dh[data-hlayout="core"] .dh__title, .dh[data-hlayout="core"] .dh__aside { margin-left: 56px; margin-right: 56px; }
+.dh[data-hlayout="core"] .dh__band { min-height: clamp(200px, 34vh, 460px); }
+.dh[data-hlayout="core"]::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(70% 34% at 50% 66%, rgba(91, 140, 255, .34), transparent 72%), radial-gradient(40% 22% at 50% 66%, rgba(59, 108, 240, .22), transparent 70%); }
+
+/* the tile: hidden unless Core */
+.dh .dna-core { display: none; position: absolute; left: 0; top: 0; z-index: 2; width: 128px; height: 128px; place-items: center; border-radius: 32px; pointer-events: none; will-change: transform;
+  background: linear-gradient(160deg, #ffffff, #eef2fa); box-shadow: inset 0 1px 0 #fff, inset 0 -6px 12px rgba(20, 36, 107, .06), 0 0 0 1px rgba(255, 255, 255, .9), 0 0 0 8px rgba(255, 255, 255, .35), 0 24px 48px -16px rgba(20, 36, 107, .35); }
+.dh[data-hlayout="core"] .dna-core { display: grid; }
+.dh .dna-core span { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #8fb0ff, #3b6cf0 55%, #2552d8); box-shadow: inset 0 2px 4px rgba(255, 255, 255, .45), 0 8px 24px rgba(59, 108, 240, .55); animation: core-glow 3.5s ease-in-out infinite; }
+.dh .dna-core img { width: 34px; height: auto; }
+@keyframes core-glow { 50% { box-shadow: inset 0 2px 4px rgba(255, 255, 255, .45), 0 8px 36px rgba(59, 108, 240, .8); } }
+
+@media (max-width: 1300px) {
+  .dh[data-hlayout="showcase"] { column-gap: 48px; }
+}
+/* tablets and phones: every layout stacks pill, headline, offer, then the helix (the centred ones stay centred) */
+@media (max-width: 1100px) {
+  .dh { min-height: calc(100svh - 112px); padding: 32px 24px; }
+  .dh[data-hlayout] { --h1: 48px; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto minmax(0, 1fr); grid-template-areas: "eyebrow" "title" "aside" "band"; column-gap: 0; }
+  .dh[data-hlayout] .dh__title { margin-top: 16px; align-self: start; }
+  .dh[data-hlayout] .dh__aside { margin-top: 16px; align-self: start; }
+  .dh[data-hlayout] .dh__band { grid-area: band; margin-top: 24px; min-height: 300px; }
+  .dh[data-hlayout="core"] { padding-left: 0; padding-right: 0; }
+  .dh[data-hlayout="core"] .dh__title, .dh[data-hlayout="core"] .dh__aside { margin-left: 24px; margin-right: 24px; }
+}
+@media (max-width: 720px) {
+  .dh { padding: 24px 16px; border-radius: 18px; min-height: calc(100svh - 88px); }
+  .dh[data-hlayout] .dh__title { font-size: 36px; line-height: 44px; }
+  .dh.js .dh__headline > span { white-space: normal; }
+  .dh[data-hlayout] .dh__band { min-height: 280px; }
+  .dh .pillar__title { font-size: 24px; line-height: 32px; }
+  .dh .dh-app { width: 40px; height: 40px; border-radius: 12px; }
+  .dh .dh-app img { width: 20px; height: 20px; }
+  .dh[data-hlayout="core"] .dh__title, .dh[data-hlayout="core"] .dh__aside { margin-left: 16px; margin-right: 16px; }
+  .dh .dna-core { width: 96px; height: 96px; border-radius: 24px; }
+  .dh .dna-core span { width: 56px; height: 56px; }
+  .dh .dna-core img { width: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dh .dna-core span { animation: none; }
+}

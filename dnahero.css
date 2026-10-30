@@ -114,6 +114,38 @@
   .dh .dna-core span { width: 56px; height: 56px; }
   .dh .dna-core img { width: 26px; }
 }
+/* small phones: the headline, offer and button all fit the first screen (iPhone SE / X) */
+@media (max-width: 400px) {
+  .dh { padding: 20px 16px; }
+  .dh[data-hlayout] .dh__title { margin-top: 12px; font-size: 32px; line-height: 40px; }
+  .dh .eyebrow { font-size: 12px; }
+  .dh .hero__sub { font-size: 15px; line-height: 22px; }
+  .dh .hero__ctas { margin-top: 20px; }
+  .dh[data-hlayout] .dh__band { min-height: 240px; margin-top: 16px; }
+  .dh .pillar__title { font-size: 20px; line-height: 28px; }
+}
+/* short phone screens (iPhone SE and similar): the whole card fits the screen; the copy tightens a
+   little (the pill steps aside) and the helix takes whatever height is left */
+@media (max-width: 720px) and (max-height: 760px) {
+  .dh { height: calc(100svh - 96px); min-height: 0; padding-top: 16px; padding-bottom: 12px; }
+  .dh[data-hlayout] { grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: "title" "aside" "band"; }
+  .dh .eyebrow { display: none; }
+  .dh[data-hlayout] .dh__title { margin-top: 0; font-size: 30px; line-height: 36px; }
+  .dh[data-hlayout] .dh__aside { margin-top: 10px; }
+  .dh .hero__sub { font-size: 14px; line-height: 20px; }
+  .dh .hero__ctas { margin-top: 16px; }
+  .dh[data-hlayout] .dh__band { min-height: 0; margin-top: 8px; }
+}
+@media (max-width: 720px) and (max-height: 620px) {
+  .dh .dh-apps { display: none; } /* no room above the scan box for the app tiles */
+  .dh[data-hlayout] .dh__title { font-size: 26px; line-height: 32px; }
+  .dh .hero__sub { font-size: 13px; line-height: 18px; }
+}
+@media (max-width: 340px) {
+  .dh[data-hlayout] .dh__title { font-size: 28px; line-height: 36px; }
+  .dh .eyebrow { font-size: 11px; }
+  .dh .hero__sub { font-size: 14px; line-height: 21px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .dh .dna-core span { animation: none; }
 }

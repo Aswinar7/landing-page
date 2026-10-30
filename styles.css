@@ -70,6 +70,7 @@ ol, ul { list-style: none; }
 /* in-page links land below the sticky nav */
 section[id], #health-check { scroll-margin-top: 80px; }
 .nav__links a:hover { color: var(--navy); }
+.nav__menu { display: none; }
 .nav__cta { margin-left: auto; padding: 12px 16px; font-size: 15px; transition: background .3s, color .3s, box-shadow .3s; }
 /* while the hero (with its own primary CTA) is on screen, the nav's CTA steps back to the secondary, outline style */
 .nav.is-hero .nav__cta { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px rgba(6,33,80,.18); }
@@ -376,7 +377,11 @@ section[id], #health-check { scroll-margin-top: 80px; }
 .between__body { display: grid; grid-template-columns: 280px minmax(0, 1fr) 420px; gap: 48px; margin-top: 48px; align-items: end; } /* all three columns end on one line */
 
 .steps { align-self: end; border-top: 1px solid #d0d0d0; } /* sits at the bottom, level with the flow chart */
-.steps .step { position: relative; display: flex; align-items: center; gap: 16px; width: 100%; height: 64px; padding-left: 16px; border-bottom: 1px solid #d0d0d0; opacity: .4; transition: opacity .3s; }
+.steps .step { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 16px; width: 100%; min-height: 64px; padding: 22px 16px 22px 16px; border-bottom: 1px solid #d0d0d0; text-align: left; opacity: .4; transition: opacity .3s; }
+/* the step that's playing opens a line of explanation under its name */
+.step__t { line-height: 20px; }
+.step__desc { grid-column: 2; display: block; max-height: 0; overflow: hidden; opacity: 0; font-size: 14px; line-height: 20px; color: var(--muted); transition: max-height .45s cubic-bezier(.22,.8,.24,1), opacity .3s, margin .45s cubic-bezier(.22,.8,.24,1); }
+.steps .step.is-active .step__desc { max-height: 160px; margin-top: 6px; opacity: 1; }
 .steps .step.is-active, .steps .step.is-done, .steps .step:hover { opacity: 1; }
 .steps .step.is-done:not(.is-active) { opacity: .7; }
 .step__n { font-family: var(--mono); }
@@ -715,12 +720,23 @@ section[id], #health-check { scroll-margin-top: 80px; }
 }
 
 @media (max-width: 1100px) {
-  .nav__links { display: none; }
+  /* the links fold into a menu that drops down under the bar */
+  .nav__menu { display: grid; place-content: center; gap: 6px; width: 44px; height: 44px; margin-left: 8px; border-radius: 12px; color: var(--navy); box-shadow: inset 0 0 0 1px rgba(6,33,80,.14); background: #fff; }
+  .nav__menu span { display: block; width: 18px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .25s, opacity .25s; }
+  .nav.is-open .nav__menu span:first-child { transform: translateY(4px) rotate(45deg); }
+  .nav.is-open .nav__menu span:last-child { transform: translateY(-4px) rotate(-45deg); }
+  .nav__links { position: absolute; left: 0; right: 0; top: 100%; display: flex; flex-direction: column; gap: 0; margin: 0; padding: 8px 16px 16px; background: rgba(254,254,254,.98); border-bottom: 1px solid rgba(6,33,80,.08); box-shadow: 0 24px 40px -24px rgba(6,33,80,.25); font-size: 17px;
+    visibility: hidden; opacity: 0; transform: translateY(-8px); transition: opacity .2s, transform .2s, visibility 0s .2s; }
+  .nav.is-open .nav__links { visibility: visible; opacity: 1; transform: none; transition: opacity .2s, transform .2s; }
+  .nav__links a { padding: 14px 8px; border-bottom: 1px solid rgba(6,33,80,.06); }
+  .nav__links a:last-child { border-bottom: 0; }
+  .nav__links a[aria-current="true"]::after { display: none; }
+  .nav__inner { position: relative; padding: 0 24px; }
   .layer { height: auto; padding-bottom: 16px; }
   .layers { padding: 72px 24px 80px; }
   .layers__grid { grid-template-columns: 1fr; margin-top: 56px; }
   .layers__col, .layers__col:first-child { padding: 40px 0; border-left: 0; border-top: 1px solid rgba(6,33,80,.12); }
-  .layers__art { height: 240px; margin: 24px 0 32px; }
+  .layers__art { height: 220px; margin: 24px 0 32px; }
   .cover__content { padding: 72px 24px 0; }
   .cover__content .h2, .cover__content .lede { width: auto; }
   .cover { min-height: 0; }
@@ -752,8 +768,33 @@ section[id], #health-check { scroll-margin-top: 80px; }
   .dev__ctas { flex-direction: column; }
   .protects { padding: 12px; }
   .protects__stage { min-height: 0; padding: 48px 16px 32px; border-radius: 18px; }
-  .tab { padding: 0 11px; font-size: 14px; }
-  .between__body { grid-template-columns: minmax(0, 1fr); }
+  /* the four product tabs as a 2 × 2 grid, so none is cut off */
+  .dock { display: grid; grid-template-columns: 1fr 1fr; width: 100%; overflow: visible; }
+  .tab { justify-content: center; padding: 0 10px; font-size: 14px; }
+  /* the window's address sits right of the traffic lights instead of over them */
+  .mac__bar { height: 32px; padding: 0 10px; }
+  .mac__dots { gap: 6px; }
+  .mac__dots i { width: 9px; height: 9px; }
+  .mac__title { left: 56px; right: 10px; transform: none; padding: 2px 8px; font-size: 10px; line-height: 14px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .layers__art { height: 180px; margin: 16px 0 24px; }
+  .layers__col, .layers__col:first-child { padding: 32px 0; }
+  /* phones: the chat leads and the flow runs under it, as one story; the step list steps aside
+     (the chat's title already names the step) */
+  .between__body { display: flex; flex-direction: column; align-items: stretch; gap: 40px; margin-top: 32px; }
+  /* sized like Neon's mobile prompt card: a compact window onto the latest lines, the prompt box under them */
+  .between__body .chat { order: 1; height: 300px; border-radius: 12px; }
+  .between__body .chat__head { height: 44px; padding: 0 14px; gap: 8px; font-size: 15px; }
+  .between__body .chat__body { gap: 10px; padding: 12px 14px 4px; font-size: 14px; line-height: 20px; }
+  .between__body .reply__text { font-size: 14px; line-height: 20px; }
+  .between__body .bubble--user { padding: 8px 12px; border-radius: 10px; }
+  .between__body .chat__ask { margin: 6px 12px 12px; padding: 10px 10px 8px 12px; border-radius: 10px; }
+  .between__body .chat__input { height: 22px; font-size: 14px; }
+  .between__body .chat__tools { margin-top: 18px; gap: 10px; }
+  .between__body .chat__tools > svg { width: 16px; height: 16px; }
+  .between__body .chat__ask button { width: 28px; height: 28px; }
+  .between__body .flow2 { order: 2; }
+  .between__body .steps { order: 0; align-self: stretch; }
+  .steps .step { min-height: 56px; padding: 18px 8px 18px 8px; column-gap: 14px; font-size: 16px; }
   .flow2 { zoom: .85; }
   .flow2::before { inset: 0; }
   .chat { height: 560px; }
@@ -766,6 +807,22 @@ section[id], #health-check { scroll-margin-top: 80px; }
   .footer__bottom { flex-direction: column; gap: 8px; margin: 0 16px; padding-right: 0; }
   .footer__ask { flex-direction: column; align-items: flex-start; gap: 12px; margin: 0 16px; }
   .footer__bottom nav { flex-wrap: wrap; }
+}
+
+/* small phones (iPhone SE, iPhone X, 360-wide Androids) */
+@media (max-width: 400px) {
+  .h2, .cta h2 { font-size: 30px; line-height: 38px; }
+  .lede { font-size: 16px; line-height: 24px; }
+  .flow2 { zoom: .72; } /* 400 → 288 wide */
+  .between__body .chat { height: 290px; }
+  .nav__cta { padding: 9px 12px; font-size: 13px; }
+  .between { padding: 48px 16px; }
+}
+@media (max-width: 340px) {
+  .h2, .cta h2 { font-size: 26px; line-height: 34px; }
+  .nav__inner { padding: 0 12px; }
+  .nav__menu { width: 40px; height: 40px; }
+  .tab { gap: 6px; padding: 0 6px; font-size: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

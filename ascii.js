@@ -60,6 +60,13 @@
     const g = og = off.getContext('2d', { willReadFrequently: true });
     // art lives in a wide band across the section, clear of the very edges
     box = { x: W * .06, y: H * .06, w: W * .88, h: H * .86 };
+    // phones and tablets: fitting the width would shrink it to a sliver in a tall, narrow section, so it's
+    // drawn wider than the screen (the sides run off) and centred behind the call to action above the footer
+    if (W < 900) {
+      const cta = host.querySelector('.cta'), ch = cta ? cta.offsetHeight : H * .45;
+      const bw = W * (W < 480 ? 2.1 : 1.6), bh = bw * DNA.h / DNA.w;
+      box = { x: (W - bw) / 2, y: Math.max(-bh * .1, ch * .55 - bh / 2), w: bw, h: bh };
+    }
     dnaBuf = new Float32Array(cols * rows);
     seed = Float32Array.from({ length: cols * rows }, () => Math.random());
     glyph = Uint8Array.from({ length: cols * rows }, () => (Math.random() * 3) | 0);

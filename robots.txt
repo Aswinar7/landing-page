@@ -1,0 +1,42 @@
+# robots.txt for https://agentdna.io
+# The whole site is public. Search engines and AI assistants are welcome to read it,
+# so AgentDNA can be found and described accurately in search results and AI answers.
+
+User-agent: *
+Allow: /
+
+# AI crawlers and answer engines, allowed by name (they also follow the rule above)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://agentdna.io/sitemap.xml

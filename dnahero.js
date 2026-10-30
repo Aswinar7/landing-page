@@ -348,7 +348,9 @@
       // the loop fits its slot's width, leaving room either side for the Know and Record labels
       // (the Showcase hero layout runs it wider: about two thirds of the card)
       const wide = ROOT.dataset.hlayout === 'showcase';
-      const halfW = W < 700 ? W * 0.44 : Math.min(W * (wide ? 0.335 : 0.285), bandBox().width / 2 - 150);
+      // tablets (under 1100) run it a little wider, with less room kept for the labels
+      const tablet = W < 1100;
+      const halfW = W < 700 ? W * 0.44 : Math.min(W * (tablet ? 0.37 : wide ? 0.335 : 0.285), bandBox().width / 2 - (tablet ? 118 : 150));
       return { halfW: Math.max(halfW, 120), hp: Math.max(halfW, 120) };
     }
     // the band slot's left edge and width within the hero (the whole hero when there is none)
@@ -368,13 +370,14 @@
         bandH = r.height;
       }
       // the loop and the Control label under it stay inside the slot (it can be short, e.g. the Framed layout's panel)
-      const ampMax = band ? Math.min(bandH * 0.36, bandH / 2 - 64) : H * (mobile ? 0.17 : 0.25);
+      const ampMax = band ? Math.min(bandH * 0.36, bandH / 2 - (mobile ? 44 : 64)) : H * (mobile ? 0.17 : 0.25);
       G.lens = scoped();
       G.box = !G.lens && boxed();
       // centred on the band slot (the hero layouts can put it to one side)
       const bb = bandBox();
       G.cx = band && !mobile ? bb.left + bb.width / 2 : W / 2;
-      G.cy = top + bandH * (G.box || coreMode() ? 0.5 : band ? 0.42 : mobile ? 0.46 : 0.48);
+      // phones: a little above the middle, so the names under it stay inside the slot
+      G.cy = top + bandH * (G.box && mobile && bandH < 280 ? 0.44 : G.box || coreMode() ? 0.5 : band ? 0.42 : mobile ? 0.46 : 0.48);
       G.angle = 0;
       if (G.lens) {
         // the axis leans up and to the right through a point right of centre
@@ -387,7 +390,7 @@
       ({ halfW: G.halfW, hp: G.hp } = helixSpan()); // half a turn: the outer crossings sit just past the edges, or at the tips
       G.span = G.lens ? G.halfW : G.hp; // how far along the axis the strands (and the comets' loop) run
       G.k = Math.PI / G.hp;
-      G.amp = G.lens ? lensAmp() : Math.min(G.hp * (G.box ? (mobile ? 0.34 : ROOT.dataset.hlayout === 'showcase' ? 0.28 : 0.24) : 0.4), ampMax);
+      G.amp = G.lens ? lensAmp() : Math.min(G.hp * (G.box ? (mobile ? 0.34 : W < 1100 ? 0.34 : ROOT.dataset.hlayout === 'showcase' ? 0.28 : 0.24) : 0.4), ampMax);
       G.ak = G.amp * G.k;              // the strands' steepest slope, at the crossings
       G.n = 1 / Math.hypot(1, G.ak);
       G.persp = metal && !G.lens ? 0 : PERSP; // the metal shader draws the strands flat
@@ -1259,8 +1262,15 @@
         pin(c, G.cx - c.offsetWidth / 2, G.cy + G.amp + G.w0 * 0.5 + (W < 700 ? 12 : 14) + ctlDrop);
         const gap = clamp(W * 0.018, 12, 30);
         if (W < 700) {
-          pin(k, clamp(G.cx - G.hp, 16, W - 16 - k.offsetWidth), G.cy - G.amp - G.w0 - k.offsetHeight - 14);
-          pin(r, clamp(G.cx + G.hp - r.offsetWidth, 16, W - 16 - r.offsetWidth), G.cy + G.amp + G.w0 + 14);
+          // phones: all three names in one row under the helix, Know under the left lobe and Record
+          // under the right, pushed apart from Control if a narrow screen would make them touch
+          const y = G.cy + G.amp + G.w0 * 0.5 + 12 + ctlDrop, gapMin = 12;
+          const cl = G.cx - c.offsetWidth / 2, cr = G.cx + c.offsetWidth / 2;
+          const kx = clamp(Math.min(G.cx - G.hp * 0.62 - k.offsetWidth / 2, cl - gapMin - k.offsetWidth), 12, W - 12 - k.offsetWidth);
+          const rx = clamp(Math.max(G.cx + G.hp * 0.62 - r.offsetWidth / 2, cr + gapMin), 12, W - 12 - r.offsetWidth);
+          pin(c, cl, y);
+          pin(k, kx, y);
+          pin(r, rx, y);
         } else {
           pin(k, G.cx - G.hp - gap - k.offsetWidth, G.cy - k.offsetHeight / 2);
           pin(r, G.cx + G.hp + gap, G.cy + G.amp * 0.3 - r.offsetHeight / 2);

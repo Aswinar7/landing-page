@@ -1,0 +1,15 @@
+# AgentDNA
+
+> AgentDNA is the security layer for AI agents. It verifies every agent's identity and delegated authority, enforces context-aware access throughout agentic workflows, and keeps tamper-evident proof of every protected interaction.
+
+AgentDNA checks every hand-off in an agent's work, not just the login at the start: user → agent → tool → app → output. It is built on three pillars: Evolved Identity (GRADE), Contextual Access (CBAC) and Irrefutable Auditing (the Provenance Layer). Engineers add it to an agent with the AgentDNA Python SDK; security teams work in the AgentDNA Dashboard.
+
+## Start here
+
+- [Product brief](https://agentdna.io/agent.md): what AgentDNA is, how it works, and how to get started, written for AI assistants
+- [Homepage](https://agentdna.io/): the product overview
+
+## Docs and product
+
+- [Documentation](https://docs.agentdna.io): SDK reference and guides
+- [Dashboard](https://dashboard.agentdna.io): sign up for an API key; observe, visualize, investigate and control agents

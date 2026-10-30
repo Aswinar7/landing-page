@@ -60,6 +60,7 @@ document.querySelectorAll('[data-cycle]').forEach((list) => {
         }
       }
       const src = item.dataset.shot || shot.getAttribute('src');
+      shot.alt = 'AgentDNA dashboard, ' + item.textContent.trim() + ': ' + item.dataset.body;
       if (!shot.src.endsWith(src)) {
         shot.classList.add('swap');
         setTimeout(() => { shot.src = src; shot.classList.remove('swap'); }, 220);
@@ -83,6 +84,17 @@ document.querySelectorAll('[data-cycle]').forEach((list) => {
 
   activate(index);
 });
+
+// Phones and tablets: the menu button opens and closes the nav links (any link, Escape or a tap outside closes it).
+const navEl = document.querySelector('.nav'), navMenu = document.querySelector('.nav__menu');
+if (navEl && navMenu) {
+  const setMenu = (o) => { navEl.classList.toggle('is-open', o); navMenu.setAttribute('aria-expanded', o); navMenu.setAttribute('aria-label', o ? 'Close menu' : 'Menu'); };
+  navMenu.addEventListener('click', (e) => { e.stopPropagation(); setMenu(!navEl.classList.contains('is-open')); });
+  navEl.querySelectorAll('.nav__links a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('click', (e) => { if (!e.target.closest('.nav')) setMenu(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && navEl.classList.contains('is-open')) { setMenu(false); navMenu.focus(); } });
+  addEventListener('resize', () => { if (innerWidth > 1100) setMenu(false); });
+}
 
 // The nav's CTA is secondary while a hero is on screen below the nav, primary once it has scrolled away.
 const nav = document.querySelector('.nav');

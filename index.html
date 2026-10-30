@@ -3,19 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AgentDNA</title>
-  <meta name="description" content="AgentDNA gives every agent a verifiable identity, enforces what it can access, and records every action.">
+  <title>AgentDNA: Security Layer for AI Agents | Identity &amp; Access</title>
+  <meta name="description" content="The security layer for AI agents: verify identity and delegated authority, enforce context-aware access, and keep tamper-evident proof of every action.">
+  <link rel="canonical" href="https://agentdna.io/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#062150">
+  <link rel="icon" type="image/png" href="assets/logo-emblem.png">
+  <link rel="apple-touch-icon" href="assets/logo-emblem.png">
+  <!-- a plain-text brief for AI assistants and answer engines (llms.txt convention) -->
+  <link rel="alternate" type="text/markdown" href="/agent.md" title="AgentDNA product brief">
+  <!-- social previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AgentDNA">
+  <meta property="og:url" content="https://agentdna.io/">
+  <meta property="og:title" content="AgentDNA: The Security Layer for AI Agents">
+  <meta property="og:description" content="The security layer for AI agents: verify identity and delegated authority, enforce context-aware access, and keep tamper-evident proof of every action.">
+  <meta property="og:image" content="https://agentdna.io/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AgentDNA: Know Every Agent. Govern Every Interaction. Prove Every Decision.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AgentDNA: The Security Layer for AI Agents">
+  <meta name="twitter:description" content="The security layer for AI agents: verify identity and delegated authority, enforce context-aware access, and keep tamper-evident proof of every action.">
+  <meta name="twitter:image" content="https://agentdna.io/assets/og-image.png">
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Organization", "@id": "https://agentdna.io/#org", "name": "AgentDNA", "url": "https://agentdna.io/", "logo": "https://agentdna.io/assets/logo-emblem.png", "description": "AgentDNA is a security platform that gives organizations visibility, control, and trust across their AI agent ecosystem."}, {"@context": "https://schema.org", "@type": "WebSite", "@id": "https://agentdna.io/#website", "url": "https://agentdna.io/", "name": "AgentDNA", "publisher": {"@id": "https://agentdna.io/#org"}}, {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "AgentDNA", "applicationCategory": "SecurityApplication", "operatingSystem": "Web; Python SDK", "url": "https://agentdna.io/", "description": "The security layer for AI agents: verify identity and delegated authority, enforce context-aware access, and keep tamper-evident proof of every action.", "publisher": {"@id": "https://agentdna.io/#org"}, "featureList": ["Evolved Identity: GRADE verifies an agent's identity, ownership and delegated authority through a live graph of delegation", "Contextual Access: CBAC enforces short-lived, least-privilege access for each interaction", "Irrefutable Auditing: immutable, tamper-evident records on the Provenance Layer", "Python SDK (pip install agent-dna)"], "softwareHelp": {"@type": "CreativeWork", "url": "https://docs.agentdna.io"}}]</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Google+Sans+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Math&text=%E2%88%88%E2%8A%82%E2%8A%86%E2%89%88%E2%87%92%E2%88%A9%CE%94&display=swap">
-  <link rel="preload" as="image" href="assets/discover-screenshot.png">
-  <link rel="preload" as="image" href="assets/observability-screenshot.png">
-  <link rel="preload" as="image" href="assets/identify-screenshot.png">
-  <link rel="preload" as="image" href="assets/control-screenshot.png">
-  <link rel="preload" as="image" href="assets/detect-screenshot.png">
-  <link rel="preload" as="image" href="assets/investigate-screenshot.png">
+  <!-- the product window's screenshots, fetched after the page so the hero isn't held up -->
+  <link rel="prefetch" as="image" href="assets/visualize-screenshot.png">
+  <link rel="prefetch" as="image" href="assets/control-screenshot.png">
+  <link rel="prefetch" as="image" href="assets/intent-view-more-poster.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="scan.css">
   <link rel="stylesheet" href="shapes.css">
@@ -32,10 +52,12 @@
         <span class="emblem"><img src="assets/logo-emblem.png" alt=""><img class="emblem__mark" src="assets/logo-mark.svg" alt=""></span>
         <img class="brand__name" src="assets/logo-wordmark.png" alt="AgentDNA">
       </a>
-      <nav class="nav__links">
+      <nav class="nav__links" id="navLinks">
         <a href="#platform">Platform</a><a href="#how-it-works">How it works</a><a href="#integrations">Integrations</a><a href="#product">Dashboard</a><a href="#quick-start">Quick start</a>
       </nav>
       <a class="btn btn--primary nav__cta" href="#">Get A Demo</a>
+      <!-- phones and tablets: the links open from this button -->
+      <button class="nav__menu" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span></button>
     </div>
   </header>
 
@@ -77,7 +99,7 @@
         <div class="hero__top">
           <div>
             <span class="eyebrow"><span class="eyebrow__mark"><img src="assets/logo-helix.png" alt=""></span>The security layer for AI agents</span>
-            <h1 class="hero__title">Stop Unauthorized AI Actions.<br><span>Prevent Sensitive Data Exposure.</span></h1>
+            <p class="hero__title">Stop Unauthorized AI Actions.<br><span>Prevent Sensitive Data Exposure.</span></p>
           </div>
           <div class="hero__aside">
             <p class="hero__sub">Find out where your AI agents are exposed, with a free 5-minute check and a customised report.</p>
@@ -269,9 +291,9 @@
           <h2 class="rs__title" id="rsTitle">What changed once agents ran through AgentDNA.</h2>
         </header>
         <ul class="rs__row">
-          <li><b class="rs__fig"><span data-n="100">100</span>%</b><span class="rs__label">Identity coverage</span><span class="rs__detail">of agent actions traced to a verified identity</span></li>
-          <li><b class="rs__fig"><span data-n="90">90</span>%+</b><span class="rs__label">Blast-radius reduction</span><span class="rs__detail">less reach for an agent that has been compromised</span></li>
-          <li><b class="rs__fig"><span data-n="100">100</span>%</b><span class="rs__label">Tamper-evident logging</span><span class="rs__detail">of decisions kept in a tamper-evident record</span></li>
+          <li><b class="rs__fig"><span data-n="100">100</span>%</b><span class="rs__label">Identity<br>coverage</span><span class="rs__detail">of agent actions traced to a verified identity</span></li>
+          <li><b class="rs__fig"><span data-n="90">90</span>%+</b><span class="rs__label">Blast-radius<br>reduction</span><span class="rs__detail">less reach for an agent that has been compromised</span></li>
+          <li><b class="rs__fig"><span data-n="100">100</span>%</b><span class="rs__label">Tamper-evident<br>logging</span><span class="rs__detail">of decisions kept in a tamper-evident record</span></li>
         </ul>
       </div>
     </section>
@@ -335,11 +357,11 @@
       </div>
       <div class="between__body">
         <ol class="steps" id="steps">
-          <li><button class="step" type="button" data-step="0"><span class="step__n">01</span>User Gives a prompt<span class="bar"></span></button></li>
-          <li><button class="step" type="button" data-step="1"><span class="step__n">02</span>GRADE Identifies<span class="bar"></span></button></li>
-          <li><button class="step" type="button" data-step="2"><span class="step__n">03</span>CBAC Check<span class="bar"></span></button></li>
-          <li><button class="step" type="button" data-step="3"><span class="step__n">04</span>Actions Validated<span class="bar"></span></button></li>
-          <li><button class="step" type="button" data-step="4"><span class="step__n">05</span>Everything is recorded<span class="bar"></span></button></li>
+          <li><button class="step" type="button" data-step="0"><span class="step__n">01</span><span class="step__t">User Gives a prompt</span><span class="step__desc">A person asks an agent to do something. AgentDNA notes who asked and what they asked for.</span><span class="bar"></span></button></li>
+          <li><button class="step" type="button" data-step="1"><span class="step__n">02</span><span class="step__t">GRADE Identifies</span><span class="step__desc">GRADE verifies the user and the agent acting for them, and links both into one signed custody chain.</span><span class="bar"></span></button></li>
+          <li><button class="step" type="button" data-step="2"><span class="step__n">03</span><span class="step__t">CBAC Check</span><span class="step__desc">Before any tool is reached, CBAC checks what this agent may do for this task. Anything out of scope is blocked.</span><span class="bar"></span></button></li>
+          <li><button class="step" type="button" data-step="3"><span class="step__n">04</span><span class="step__t">Actions Validated</span><span class="step__desc">Each tool call is matched to the original intent and signed before it reaches the app.</span><span class="bar"></span></button></li>
+          <li><button class="step" type="button" data-step="4"><span class="step__n">05</span><span class="step__t">Everything is recorded</span><span class="step__desc">The output and every step behind it are written to the Provenance Layer, ready to audit.</span><span class="bar"></span></button></li>
         </ol>
 
         <div class="flow2" id="flow2" aria-hidden="true">
@@ -437,7 +459,7 @@
               <span class="mac__dots"><i></i><i></i><i></i></span>
               <span class="mac__title" id="macTitle">app.agentdna.ai/observe</span>
             </div>
-            <div class="mac__view"><img id="macShot" src="assets/observability-screenshot.png" alt=""><video id="macVideo" muted playsinline preload="none" aria-hidden="true"></video></div>
+            <div class="mac__view"><img id="macShot" src="assets/observability-screenshot.png" alt="AgentDNA dashboard: the Interaction plane tracing a user through an agent and its peer agents to the apps and intents it touched" loading="lazy" decoding="async"><video id="macVideo" muted playsinline preload="none" aria-hidden="true"></video></div>
           </div>
 
 

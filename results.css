@@ -35,9 +35,18 @@
   .rs { height: auto; min-height: 0; margin: 32px auto; padding: 24px 16px; }
   .rs__title { font-size: 28px; line-height: 36px; }
   .rs__row li { padding: 0 12px; }
-  .rs__fig { margin-bottom: 4px; font-size: 32px; line-height: 40px; }
-  .rs__label { font-size: 13px; line-height: 18px; }
+  .rs__fig { margin-bottom: 6px; font-size: 44px; line-height: 52px; }
+  .rs__label { font-size: 14px; line-height: 20px; white-space: nowrap; }
   .rs__detail { display: none; }
+}
+@media (max-width: 400px) {
+  .rs__row li { padding: 0 8px; }
+  .rs__fig { font-size: 36px; line-height: 44px; letter-spacing: -0.05em; }
+  .rs__label { font-size: 13px; line-height: 18px; }
+}
+@media (max-width: 340px) {
+  .rs__fig { font-size: 30px; line-height: 38px; }
+  .rs__label { font-size: 12px; line-height: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rs__head, .rs__row li { transition: none; }
